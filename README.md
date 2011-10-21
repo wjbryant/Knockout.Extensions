@@ -1,7 +1,7 @@
 Knockout Extensions
 ===================
 
-This project contains a number of useful extensions to the excellent javascript library that is [Knockout JS](http://knockoutjs.com)
+This project contains a number of useful extensions and databindings for the [Knockout JS](http://knockoutjs.com) javascript library.
 
 ## Supported Extensions ##
 
