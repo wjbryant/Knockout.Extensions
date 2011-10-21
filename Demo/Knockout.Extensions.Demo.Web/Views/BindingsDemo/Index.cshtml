@@ -109,7 +109,12 @@
 <!-- Sample 1: Basic Data Table -->
 <div Id="sample1" class="sample">
     <h1>Sample1: Basic Data Table</h1>
-    <p class="description">Demonstrates a basic data table using an knockout observable array as a data source.</p>
+    <p class="description">
+        This example demonstrates a basic data table using a knockout observable array as a data source.  
+        Using the Add and Remove links will add and remove items to the table's data source, and in turn will
+        add and remove rows in the data table.  This shows that each row in the table is bound to each item in the
+        array data source.
+    </p>
     <div class="table">
         <a data-bind="click: addItem">Add</a>
         <a data-bind="click: removeLastItem">Remove</a>
@@ -120,14 +125,13 @@
                     <td>Column 1</td>
                     <td>Column 2</td>
                     <td>Column 3</td>
-                    <td></td>
                 </tr>
             </thead>
             <tbody>
             </tbody>
         </table>
     </div>
-    <h2>View Model</h2>
+    <h2>Array Data Source</h2>
     <div data-bind="text: json"></div>
 </div>
 <script type="text/javascript">
@@ -144,7 +148,14 @@
 <!-- Sample 2: Editable Data Table with Row Template -->
 <div Id="sample2" class="sample">
     <h1> Sample 2: Editable Data Table with Row Template</h1>
-    <p class="description">Demonstrates a simple table using an knockout observable array as a data source.</p>
+    <p class="description">
+        This demonstration is the same as Sample 1, except for the following:
+        <ul>
+            <li>A jQuery template is used by the table to print each row.</li>
+            <li>You are able to edit the values of each cell which demonstrates how each cell is bound back to an item property in the array data source.</li>
+            <li>You can remove a specific row in the table demonstrating the link between the table's rows and the items in the array data source.</li>
+        </ul>
+    </p>
     <div class="table">
         <a data-bind="click: addItem">Add</a>
         <br /><br />
@@ -154,13 +165,14 @@
                     <td>Column 1</td>
                     <td>Column 2</td>
                     <td>Column 3</td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
             </tbody>
         </table>
     </div>
-    <h2>View Model</h2>
+    <h2>Array Data Source</h2>
     <div data-bind="text: json"></div>
 </div>
 <script Id="sample2RowTemplate" type="text/html">
@@ -184,9 +196,23 @@
 <!-- Sample 2: Editable Data Table with Row Template -->
 <div Id="sample3" class="sample">
     <h1> Sample 3: Editable Data Table with Row Template and AJAX data source</h1>
-    <p class="description">Demonstrates a simple table using an knockout observable array as a data source.</p>
+    <p class="description">
+        This demonstration is the same as Sample 2, except it uses an AJAX datasource instead of an Array datasource.  This shows how the Knockout DataTables adapter
+        can support server side processing of paging, sorting, searching, and retrieval of data.
+    </p>
+    <p>
+        Need to implement:
+        <ul>
+            <li>Search</li>
+            <li>Add</li>
+            <li>Remove</li>
+            <li>Edit & Save</li>
+            <li>Cancel perhaps...</li>
+            <li>Read Only mode perhaps...</li>
+        </ul>
+    </p>
     <div class="table">
-        <a data-bind="click: addItem">Add</a>
+        @*<a data-bind="click: addItem">Add</a>*@
         <br /><br />
         <table data-bind="dataTable: { dataSource: getData, rowTemplate: 'sample3RowTemplate', columns: ['Column1', 'Column2', 'Column3'] }">
             <thead>
@@ -205,7 +231,7 @@
     <td><input type="text" data-bind="value: Column1" /></td>
     <td><input type="text" data-bind="value: Column2" /></td>
     <td><input type="text" data-bind="value: Column3" /></td>
-    <td><a data-bind="click: function() { vm2.removeItem($data); }">Remove</a></td>
+    @*<td><a data-bind="click: function() { vm2.removeItem($data); }">Remove</a></td>*@
 </script>
 <script type="text/javascript">
 
