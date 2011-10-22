@@ -13,6 +13,7 @@ basic support for AJAX based data sources.
 Check out the demo project or the samples below for usage examples.  Documentation of this binding is still to come...
 
 #### jsFiddle Samples
+(There are currently issues viewing these fiddles in IE9 due to the scripts being blocked by the browser)
  - [Sample 1](http://jsfiddle.net/ducka/fPaQs/)
  - [Sample 2](http://jsfiddle.net/ducka/haq2y/)
 
