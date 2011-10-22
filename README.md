@@ -14,8 +14,9 @@ Check out the demo project or the samples below for usage examples.  Documentati
 
 #### jsFiddle Samples
 (There are currently issues viewing these fiddles in IE9 due to the scripts being blocked by the browser)
- - [Sample 1](http://jsfiddle.net/ducka/fPaQs/)
- - [Sample 2](http://jsfiddle.net/ducka/haq2y/)
+
+- [Sample 1](http://jsfiddle.net/ducka/fPaQs/)
+- [Sample 2](http://jsfiddle.net/ducka/haq2y/)
 
 ---
 <div><br />
