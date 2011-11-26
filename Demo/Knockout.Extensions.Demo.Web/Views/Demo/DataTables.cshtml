@@ -4,35 +4,9 @@
 }
 <link href="/Content/DataTables-1.8.2/media/css/demo_table_jui.css" rel="stylesheet" type="text/css" />
 <script src="@Url.Content("~/Scripts/DataTables-1.8.2/media/js/jquery.dataTables.js")" type="text/javascript"></script>
-<script src="@Url.Content("~/Scripts/cog.knockout.bindings.dataTables.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/ko.bindings.dataTables.js")" type="text/javascript"></script>
 <style type="text/css">
 
-.sample
-{
-    border:1px solid gray;
-    padding:15px;
-    margin-top:10px;
-    margin-bottom:10px;
-}
-
-.sample .description
-{
-    
-}
-
-.sample h1
-{
-    margin-top: 0px;
-    margin-bottom: 20px;
-    font-size:1.5em;
-}
-
-.sample h2
-{
-    margin-top: 0px;
-    margin-bottom: 5px;
-    font-size:1.1em;
-}
 .sample .table, .sample table
 {
     width:800px;
@@ -64,7 +38,7 @@
 
         this.getData = function (options, callback) {
             $.ajax({
-                url: '/BindingsDemo/GetData',
+                url: '/Demo/DataTables',
                 data: ko.toJSON(options),
                 type: "POST",
                 contentType: "application/json charset=utf-8",
@@ -92,7 +66,8 @@
 
         this.removeItem = function (item)
         {
-            // Issue: Why is the instance of 'item' not exist in the data array?  Does datatables do something to the objects?
+            // Issue: DataTables is copying the dataSource of the data table internally, so an attempt to remove by instance here wont work.
+            // Unfortunately we have to match by key here currently...
             //            this.data.remove(item);
             this.data.remove(function (item2) { return item.Id == item2.Id; });
         }
@@ -104,7 +79,7 @@
     };
 
 </script>
-<h1>Data Tables Bindings</h1>
+<h1>Data Tables Demo</h1>
 
 <!-- Sample 1: Basic Data Table -->
 <div Id="sample1" class="sample">
@@ -175,18 +150,17 @@
     <h2>Array Data Source</h2>
     <div data-bind="text: json"></div>
 </div>
-<script Id="sample2RowTemplate" type="text/html">
-    <td><input type="text" data-bind="value: Column1" /></td>
-    <td><input type="text" data-bind="value: Column2" /></td>
-    <td><input type="text" data-bind="value: Column3" /></td>
+<script id="sample2RowTemplate" type="text/html">
+    <td><input type="text" data-bind="value: Column1, valueUpdate:'keypress'" /></td>
+    <td><input type="text" data-bind="value: Column2, valueUpdate:'keypress'" /></td>
+    <td><input type="text" data-bind="value: Column3, valueUpdate:'keypress'" /></td>
     <td><a data-bind="click: function() { vm2.removeItem($data); }">Remove</a></td>
 </script>
 <script type="text/javascript">
 
     var vm2 = new ViewModel();
 
-    $(function ()
-    {
+    $(function () {
         ko.applyBindings(vm2, $("#sample2")[0]);
     });
 
@@ -203,7 +177,6 @@
     <p>
         Need to implement:
         <ul>
-            <li>Search</li>
             <li>Add</li>
             <li>Remove</li>
             <li>Edit & Save</li>
@@ -228,9 +201,9 @@
     </div>
 </div>
 <script Id="sample3RowTemplate" type="text/html">
-    <td><input type="text" data-bind="value: Column1" /></td>
-    <td><input type="text" data-bind="value: Column2" /></td>
-    <td><input type="text" data-bind="value: Column3" /></td>
+    <td><input type="text" data-bind="value: Column1, valueUpdate:'keypress'" /></td>
+    <td><input type="text" data-bind="value: Column2, valueUpdate:'keypress'" /></td>
+    <td><input type="text" data-bind="value: Column3, valueUpdate:'keypress'" /></td>
     @*<td><a data-bind="click: function() { vm2.removeItem($data); }">Remove</a></td>*@
 </script>
 <script type="text/javascript">

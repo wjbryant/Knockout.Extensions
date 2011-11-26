@@ -13,7 +13,6 @@ namespace Knockout.Extensions.Demo.Web
             if (criteria == null)
                 return query;
 
-
             // Apply ordering to query.
             IList<DataTableColumnCriteria> columnCriteria = criteria.Columns
                 .Where(e => e.IsSorted)
