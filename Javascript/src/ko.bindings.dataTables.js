@@ -1,6 +1,6 @@
 /// <reference path="knockout-1.3.0beta.debug.js" />
 /// <reference path="knockout.mapping-latest.js" />
-/// <reference path="jquery-1.4.4-vsdoc.js" />
+/// <reference path="jquery-1.5.2-vsdoc.js" />
 /// <reference path="jquery.dataTables.js" />
 
 /**
@@ -15,11 +15,14 @@
 *
 * For more information about KnockoutJs or DataTables, see http://www.knockoutjs.com and http://www.datatables.com for details.                    
 */
-
 ko.bindingHandlers['dataTable'] = {
     'init': function (element, valueAccessor, allBindingsAccessor, viewModel) {
-        var binding = ko.utils.unwrapObservable(valueAccessor());
 
+        if ($.data(element, isInitialisedKey) === true)
+            return;
+
+        var binding = ko.utils.unwrapObservable(valueAccessor());
+        var isInitialisedKey = "ko.bindingHandlers.dataTable.isInitialised";
         var options = {};
 
         // ** Initialise the DataTables options object with the data-bind settings **
@@ -41,7 +44,7 @@ ko.bindingHandlers['dataTable'] = {
             options.fnRowCallback = function (row, data, displayIndex, displayIndexFull) {
                 ko.renderTemplate(binding.rowTemplate, data, null, row, "replaceChildren");
                 // Remove the Ko databinding attribute from each row after it's been rendered using ko.renderTemplate so when 
-                // ko.appplyBinding() is called on document load the row databinding attributes don't get processed again by Knockout.
+                // ko.applyBinding() is called on document load the row databinding attributes don't get processed again by Knockout.
                 $(row).find('[data-bind]').removeAttr('data-bind');
                 return row;
             }
@@ -70,8 +73,38 @@ ko.bindingHandlers['dataTable'] = {
             }
             // If the data source is a javascript array...
             else if (dataSource instanceof Array) {
-                // Set it as the initial data source.
-                options.aaData = binding.dataSource;
+                // Set the initial datasource of the table.
+                options.aaData = ko.utils.unwrapObservable(binding.dataSource);
+
+                // If the data source is a knockout observable array...
+                if (ko.isObservable(binding.dataSource)) {
+                    // Subscribe to the dataSource observable.  This callback will fire whenever items are added to 
+                    // and removed from the data source.
+                    binding.dataSource.subscribe(function (newItems) {
+                        // ** Redraw table **
+                        var dataTable = $(element).dataTable();
+                        // Get a list of rows in the DataTable.
+                        var tableNodes = dataTable.fnGetNodes();
+                        // If the table contains rows...
+                        if (tableNodes.length) {
+                            // Unregister each of the table rows from knockout.
+                            ko.utils.arrayForEach(tableNodes, function (node) { ko.cleanNode(node); });
+                            // Clear the datatable of rows.
+                            dataTable.fnClearTable();
+                        }
+
+                        // Unwrap the items in the data source if required.
+                        var unwrappedItems = [];
+                        ko.utils.arrayForEach(newItems, function (item) {
+                            unwrappedItems.push(ko.utils.unwrapObservable(item));
+                        });
+
+                        // Add the new data back into the data table.
+                        dataTable.fnAddData(unwrappedItems);
+                    });
+                }
+
+
             }
             // If the dataSource was not a function that retrieves data, or a javascript object array containing data.
             else {
@@ -88,7 +121,7 @@ ko.bindingHandlers['dataTable'] = {
 
                 // Empty the row that has been build by the DataTable of any child elements.
                 var destRow = $(row);
-                destRow.html("");
+                destRow.empty();
 
                 // For each column in the data table...
                 ko.utils.arrayForEach(columns, function (column) {
@@ -106,28 +139,7 @@ ko.bindingHandlers['dataTable'] = {
         }
 
         $(element).dataTable(options);
-    },
-    'update': function (element, valueAccessor) {
-        var binding = ko.utils.unwrapObservable(valueAccessor());
-
-        // If a row template hasn't been defined in the bindings, then we're 
-        if (ko.isObservable(binding.dataSource)) {
-            var dataTable = $(element).dataTable();
-
-            // Get a list of rows in the DataTable.
-            var tableNodes = dataTable.fnGetNodes();
-
-            // If the table contains rows...
-            if (tableNodes.length) {
-                // Unregister each of the table rows from knockout.
-                ko.utils.arrayForEach(tableNodes, function (node) { ko.cleanNode(node); });
-                // Clear the datatable of rows.
-                dataTable.fnClearTable();
-            }
-
-            // Add the changed data to the DataTable.
-            dataTable.fnAddData(ko.utils.unwrapObservable(binding.dataSource));
-        }
+        $.data(element, isInitialisedKey, true);
     },
 
     /*
