@@ -1,5 +1,4 @@
-﻿/// <reference path="jquery-1.5.1-vsdoc.js" />
-
+﻿/// <reference path="_references.js" />
 /**
 * Contains a number of useful utiity methods for javascript.
 *
@@ -11,40 +10,118 @@
 * Copyright 2011, All Rights Reserved, Cognitive Shift http://www.cogshift.com  
 */
 
+// ** Global Utilities **
+cog.utils = {}
 
+// ** String Utilities **
+cog.utils.string = {}
+cog.utils.string.format = function () {
+    /// <summary>
+    /// Replaces tokens in a string with the supplied parameters.
+    /// </summary>
+    /// <param name="string" type="String">
+    ///     The string to search for the tokens.
+    /// </param>
+    /// <param name="params" type="Arguments">
+    ///     A parameter list of tokens to replace.
+    /// </param>
+    /// <returns>
+    ///     The string with the tokens replaced.
+    /// </returns>
+    var s = arguments[0];
+    for (var i = 0; i < arguments.length - 1; i++) {
+        var reg = new RegExp("\\{" + i + "\\}", "gm");
+        s = s.replace(reg, cog.utils.convert.toString(arguments[i + 1]));
+    }
 
-var cog = new function () {
-    this.string = new function () {
-        this.format = function () {
-            var s = arguments[0];
-            for (var i = 0; i < arguments.length - 1; i++) {
-                var reg = new RegExp("\\{" + i + "\\}", "gm");
-                s = s.replace(reg, arguments[i + 1]);
-            }
-
-            return s;
-        };
-
-        this.endsWith = function (string, suffix) {
-            return (string.substr(string.length - suffix.length) === suffix);
-        };
-
-        this.startsWith = function (string, prefix) {
-            return (string.substr(0, prefix.length) === prefix);
-        };
-
-        this.trimEnd = function (string, chars) {
-            if (this.endsWith(string, chars))
-                return string.substring(0, string.length - chars.length);
-
-            return string;
-        };
-
-        this.trimStart = function (string, chars) {
-            if (this.startsWith(string, chars))
-                return string.substring(chars.length, string.length);
-
-            return string;
-        };
-    };
+    return s;
 };
+
+cog.utils.string.endsWith = function (string, suffix) {
+    /// <summary>
+    /// Searches the end of a string for another string.
+    /// </summary>
+    /// <param name="string" type="String">
+    ///     The string to check.
+    /// </param>
+    /// <param name="suffix" type="String">
+    ///     The suffix to look for.
+    /// </param>
+    /// <returns>
+    ///     Returns true if the string ends with the supplied suffix.
+    /// </returns>
+    return (string.substr(string.length - suffix.length) === suffix);
+};
+
+cog.utils.string.startsWith = function (string, prefix) {
+    /// <summary>
+    /// Searches the start of a string for another string.
+    /// </summary>
+    /// <param name="string" type="String">
+    ///     The string to check.
+    /// </param>
+    /// <param name="prefix" type="String">
+    ///     The prefix to look for.
+    /// </param>
+    /// <returns>
+    ///     Returns true if the string ends with the supplied prefix.
+    /// </returns>
+    return (string.substr(0, prefix.length) === prefix);
+};
+
+cog.utils.string.trimEnd = function (string, chars) {
+    /// <summary>
+    /// Trims a list of characters from the end of a string.
+    /// </summary>
+    /// <param name="string" type="String">
+    ///     The string to trim.
+    /// </param>
+    /// <param name="chars" type="String">
+    ///     The characters to trim off the end of the string.
+    /// </param>
+    /// <returns>
+    ///     The string with the characters trimmed off the end.
+    /// </returns>
+    if (cog.utils.string.endsWith(string, chars)) {
+        return string.substring(0, string.length - chars.length);
+    }
+
+    return string;
+};
+
+cog.utils.string.trimStart = function (string, chars) {
+    /// <summary>
+    /// Trims a list of characters from the start of a string.
+    /// </summary>
+    /// <param name="string" type="String">
+    ///     The string to trim.
+    /// </param>
+    /// <param name="chars" type="String">
+    ///     The characters to trim off the start of the string.
+    /// </param>
+    /// <returns>
+    ///     The string with the characters trimmed off the start.
+    /// </returns>
+    if (cog.utils.string.startsWith(string, chars)) {
+        return string.substring(chars.length, string.length);
+    }
+
+    return string;
+};
+
+cog.utils.string.repeat = function (string, count) {
+    /// <summary>
+    /// Repeats a string the specified amount of times.
+    /// </summary>
+    /// <param name="string" type="String">
+    ///     The string to repeat.
+    /// </param>
+    /// <param name="chars" type="String">
+    ///     The number of times to repeat the string.
+    /// </param>
+    /// <returns>
+    ///     The repeated string sequence.
+    /// </returns>
+    return new Array(count + 1).join(string);
+}
+

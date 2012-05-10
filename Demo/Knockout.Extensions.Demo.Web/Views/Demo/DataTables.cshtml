@@ -16,18 +16,21 @@
 </style>
 <script type="text/javascript">
 
-    function Record(Id, Column1, Column2, Column3)
-    {
+    function Record(Id, Column1, Column2, Column3) {
         this.Id = Id;
         this.Column1 = ko.observable(Column1);
         this.Column2 = ko.observable(Column2);
         this.Column3 = ko.observable(Column3);
+        this.IsSelected = ko.observable(false);
     }
 
-    function ViewModel()
-    {
+    function ViewModel() {
+
         var cellCounter = 0;
         var idCounter = 0;
+        var vm = this;
+
+        this.selectAll = ko.observable(false);
 
         this.data = ko.observableArray([
                     CreateRecord(),
@@ -49,38 +52,38 @@
             });
         }
 
-        this.json = ko.dependentObservable(function ()
-        {
+        this.json = ko.dependentObservable(function () {
             return ko.toJSON(this.data);
         }, this);
 
-        this.addItem = function ()
-        {
+        this.selectAll.subscribe(function (isSelected) {
+            $.each(vm.data(), function (i, item) {
+                item.IsSelected(isSelected);
+            });
+        });
+
+        this.addItem = function () {
             this.data.push(CreateRecord());
         }
 
-        this.removeLastItem = function ()
-        {
+        this.removeLastItem = function () {
             this.data.pop();
         }
 
-        this.removeItem = function (item)
-        {
+        this.removeItem = function (item) {
             // Issue: DataTables is copying the dataSource of the data table internally, so an attempt to remove by instance here wont work.
             // Unfortunately we have to match by key here currently...
             //            this.data.remove(item);
             this.data.remove(function (item2) { return item.Id == item2.Id; });
         }
 
-        function CreateRecord()
-        {
+        function CreateRecord() {
             return new Record(++idCounter, "cell " + ++cellCounter, "cell " + ++cellCounter, "cell " + ++cellCounter);
         }
     };
 
 </script>
 <h1>Data Tables Demo</h1>
-
 <!-- Sample 1: Basic Data Table -->
 <div Id="sample1" class="sample">
     <h1>Sample1: Basic Data Table</h1>
@@ -94,12 +97,21 @@
         <a data-bind="click: addItem">Add</a>
         <a data-bind="click: removeLastItem">Remove</a>
         <br /><br />
-        <table data-bind="dataTable: { dataSource: data, columns: ['Column1', 'Column2', 'Column3'] }">
+        <table data-bind="dataTable: { 
+            dataSource: data, 
+            columns: [
+                'Column1', 
+                'Column2', 
+                'Column3', 
+                { mDataProp: 'IsSelected', bSortable: false }
+            ]
+        }">
             <thead>
                 <tr>
                     <td>Column 1</td>
                     <td>Column 2</td>
                     <td>Column 3</td>
+                    <td>Select All <input type="checkbox" name="chkSelectAll" data-bind="checked: selectAll"  /></td>
                 </tr>
             </thead>
             <tbody>
@@ -134,12 +146,22 @@
     <div class="table">
         <a data-bind="click: addItem">Add</a>
         <br /><br />
-        <table data-bind="dataTable: { dataSource: data, rowTemplate: 'sample2RowTemplate', columns: ['Column1', 'Column2', 'Column3'] }">
+        <table data-bind="dataTable: { 
+            dataSource: data, 
+            rowTemplate: 'sample2RowTemplate', 
+            columns: [
+                'Column1', 
+                'Column2', 
+                'Column3', 
+                { mDataProp: 'IsSelected', bSortable: false }
+            ] 
+        }">
             <thead>
                 <tr>
                     <td>Column 1</td>
                     <td>Column 2</td>
                     <td>Column 3</td>
+                    <td>Select All <input type="checkbox" name="chkSelectAll" data-bind="checked: selectAll"  /></td>
                     <td></td>
                 </tr>
             </thead>
@@ -154,6 +176,7 @@
     <td><input type="text" data-bind="value: Column1, valueUpdate:'keypress'" /></td>
     <td><input type="text" data-bind="value: Column2, valueUpdate:'keypress'" /></td>
     <td><input type="text" data-bind="value: Column3, valueUpdate:'keypress'" /></td>
+    <td><input type="checkbox" data-bind="checked: IsSelected"  /></td>
     <td><a data-bind="click: function() { vm2.removeItem($data); }">Remove</a></td>
 </script>
 <script type="text/javascript">
@@ -187,7 +210,15 @@
     <div class="table">
         @*<a data-bind="click: addItem">Add</a>*@
         <br /><br />
-        <table data-bind="dataTable: { dataSource: getData, rowTemplate: 'sample3RowTemplate', columns: ['Column1', 'Column2', 'Column3'] }">
+        <table data-bind="dataTable: { 
+            dataSource: getData, 
+            rowTemplate: 'sample3RowTemplate', 
+            columns: [
+                'Column1', 
+                'Column2', 
+                'Column3'
+            ] 
+        }">
             <thead>
                 <tr>
                     <td>Column 1</td>

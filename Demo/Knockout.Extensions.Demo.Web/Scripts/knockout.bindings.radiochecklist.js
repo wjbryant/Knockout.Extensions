@@ -1,13 +1,9 @@
-﻿/// <reference path="knockout-1.3.0beta.debug.js" />
-/// <reference path="knockout.mapping-latest.js" />
-/// <reference path="jquery-1.5.2-vsdoc.js" />
-
+﻿/// <reference path="_references.js" />
 /**
 * A KnockoutJs binding handler that creates a Radio Button List or a Check Box List Control that is bound by knockout in a similar way 
 * to Drop Down or List Box controls.  
 *
 * File:         cog.knockout.radiochecklist.js
-* Version:      0.1
 * Author:       Lucas Martin
 * License:      Creative Commons Attribution 3.0 Unported License. http://creativecommons.org/licenses/by/3.0/ 
 * 

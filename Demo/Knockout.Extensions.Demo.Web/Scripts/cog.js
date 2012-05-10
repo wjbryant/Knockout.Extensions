@@ -1,4 +1,4 @@
-﻿/// <reference path="jquery-1.5.1-vsdoc.js" />
+﻿/// <reference path="_references.js" />
 
 /**
 * The root namespace of the Cognitive Shift javascript library.
