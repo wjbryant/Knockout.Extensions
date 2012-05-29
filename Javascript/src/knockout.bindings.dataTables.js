@@ -56,7 +56,7 @@ ko.bindingHandlers['dataTable'] = {
         if (binding.rowTemplate && binding.rowTemplate != '') {
             options.fnRowCallback = function (row, data, displayIndex, displayIndexFull) {
                 // Render the row template for this row.
-                ko.renderTemplate(binding.rowTemplate, new ko.bindingContext(data, bindingContext), null, row, "replaceChildren");
+                ko.renderTemplate(binding.rowTemplate, bindingContext.createChildContext(data), null, row, "replaceChildren");
                 return row;
             }
         }
@@ -149,7 +149,7 @@ ko.bindingHandlers['dataTable'] = {
                     destRow.append(newCell);
                     // bind the cell to the observable in the current data row.
 					var accesor = eval("srcData['" + columnName.replace(".", "']['") + "']");
-					ko.applyBindingsToNode(newCell[0], { text: accesor }, new ko.bindingContext(srcData, bindingContext));
+					ko.applyBindingsToNode(newCell[0], { text: accesor }, bindingContext.createChildContext(srcData));
                 });
                 
                 return destRow[0];
