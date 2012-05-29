@@ -24,7 +24,7 @@ namespace Knockout.Extensions.Demo.Web
             routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
-                new { controller = "BindingsDemo", action = "Index", id = UrlParameter.Optional } // Parameter defaults
+                new { controller = "Demo", action = "DataTables", id = UrlParameter.Optional } // Parameter defaults
             );
 
         }

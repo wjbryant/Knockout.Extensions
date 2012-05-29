@@ -32,6 +32,12 @@
 
         this.selectAll = ko.observable(false);
 
+        this.editable = ko.observable(true);
+
+        this.toggleEdit = function () {
+            vm.editable(!vm.editable());
+        }
+
         this.data = ko.observableArray([
                     CreateRecord(),
                     CreateRecord(),
@@ -145,6 +151,7 @@
     </p>
     <div class="table">
         <a data-bind="click: addItem">Add</a>
+        <a data-bind="click: toggleEdit">Toggle Edit</a>
         <br /><br />
         <table data-bind="dataTable: { 
             dataSource: data, 
@@ -173,9 +180,9 @@
     <div data-bind="text: json"></div>
 </div>
 <script id="sample2RowTemplate" type="text/html">
-    <td><input type="text" data-bind="value: Column1, valueUpdate:'keypress'" /></td>
-    <td><input type="text" data-bind="value: Column2, valueUpdate:'keypress'" /></td>
-    <td><input type="text" data-bind="value: Column3, valueUpdate:'keypress'" /></td>
+    <td><input type="text" data-bind="value: Column1, valueUpdate:'keypress', enable: $root.editable()" /></td>
+    <td><input type="text" data-bind="value: Column2, valueUpdate:'keypress', enable: $root.editable()" /></td>
+    <td><input type="text" data-bind="value: Column3, valueUpdate:'keypress', enable: $root.editable()" /></td>
     <td><input type="checkbox" data-bind="checked: IsSelected"  /></td>
     <td><a data-bind="click: function() { vm2.removeItem($data); }">Remove</a></td>
 </script>
@@ -210,6 +217,7 @@
     <div class="table">
         @*<a data-bind="click: addItem">Add</a>*@
         <br /><br />
+        <a data-bind="click: toggleEdit">Toggle Edit</a>
         <table data-bind="dataTable: { 
             dataSource: getData, 
             rowTemplate: 'sample3RowTemplate', 
@@ -232,9 +240,9 @@
     </div>
 </div>
 <script Id="sample3RowTemplate" type="text/html">
-    <td><input type="text" data-bind="value: Column1, valueUpdate:'keypress'" /></td>
-    <td><input type="text" data-bind="value: Column2, valueUpdate:'keypress'" /></td>
-    <td><input type="text" data-bind="value: Column3, valueUpdate:'keypress'" /></td>
+    <td><input type="text" data-bind="value: Column1, valueUpdate:'keypress', enable: $root.editable()" /></td>
+    <td><input type="text" data-bind="value: Column2, valueUpdate:'keypress', enable: $root.editable()" /></td>
+    <td><input type="text" data-bind="value: Column3, valueUpdate:'keypress', enable: $root.editable()" /></td>
     @*<td><a data-bind="click: function() { vm2.removeItem($data); }">Remove</a></td>*@
 </script>
 <script type="text/javascript">

@@ -56,7 +56,7 @@ ko.bindingHandlers['dataTable'] = {
         if (binding.rowTemplate && binding.rowTemplate != '') {
             options.fnRowCallback = function (row, data, displayIndex, displayIndexFull) {
                 // Render the row template for this row.
-				ko.renderTemplate(binding.rowTemplate, data, null, row, "replaceChildren");
+                ko.renderTemplate(binding.rowTemplate, new ko.bindingContext(data, bindingContext), null, row, "replaceChildren");
                 return row;
             }
         }
@@ -149,9 +149,9 @@ ko.bindingHandlers['dataTable'] = {
                     destRow.append(newCell);
                     // bind the cell to the observable in the current data row.
 					var accesor = eval("srcData['" + columnName.replace(".", "']['") + "']");
-					ko.applyBindingsToNode(newCell[0], { text: accesor }, srcData);
+					ko.applyBindingsToNode(newCell[0], { text: accesor }, new ko.bindingContext(srcData, bindingContext));
                 });
-
+                
                 return destRow[0];
             }
         }
@@ -184,7 +184,7 @@ ko.bindingHandlers['dataTable'] = {
 
         // Apply bindings to those elements that were marked for binding.  See comments above.
         $(element).find(".ko-bind").each(function (e, childElement) {
-            ko.applyBindingsToNode(childElement, null, bindingContext.$data);
+            ko.applyBindingsToNode(childElement, null, bindingContext);
             $(childElement).removeClass("ko-bind");
         });
 
