@@ -54,11 +54,12 @@ ko.bindingHandlers['dataTable'] = {
 
         // Register the row template to be used with the DataTable.
         if (binding.rowTemplate && binding.rowTemplate != '') {
-            options.fnRowCallback = function (row, data, displayIndex, displayIndexFull) {
+            // Intercept the fnRowCallback function.
+            options.fnRowCallback = cog.utils.intercept(options.fnRowCallback || function (row) { return row; }, function (row, data, displayIndex, displayIndexFull, next) {
                 // Render the row template for this row.
                 ko.renderTemplate(binding.rowTemplate, bindingContext.createChildContext(data), null, row, "replaceChildren");
-                return row;
-            }
+                return next(row, data, displayIndex, displayIndexFull);
+            });
         }
 
         // Set the data source of the DataTable.
@@ -132,8 +133,8 @@ ko.bindingHandlers['dataTable'] = {
         // If no fnRowCallback has been registered in the DataTable's options, then register the default fnRowCallback.
         // This default fnRowCallback function is called for every row in the data source.  The intention of this callback
         // is to build a table row that is bound it's associated record in the data source via knockout js.
-        if (!options.fnRowCallback) {
-            options.fnRowCallback = function (row, srcData, displayIndex, displayIndexFull) {
+        if (!binding.rowTemplate || binding.rowTemplate == '') {
+            options.fnRowCallback = cog.utils.intercept(options.fnRowCallback || function (row) { return row; }, function (row, srcData, displayIndex, displayIndexFull, next) {
                 var columns = this.fnSettings().aoColumns
 
                 // Empty the row that has been build by the DataTable of any child elements.
@@ -148,12 +149,12 @@ ko.bindingHandlers['dataTable'] = {
                     // Insert the cell in the current row.
                     destRow.append(newCell);
                     // bind the cell to the observable in the current data row.
-					var accesor = eval("srcData['" + columnName.replace(".", "']['") + "']");
-					ko.applyBindingsToNode(newCell[0], { text: accesor }, bindingContext.createChildContext(srcData));
+                    var accesor = eval("srcData['" + columnName.replace(".", "']['") + "']");
+                    ko.applyBindingsToNode(newCell[0], { text: accesor }, bindingContext.createChildContext(srcData));
                 });
-                
-                return destRow[0];
-            }
+
+                return next(destRow[0], srcData, displayIndex, displayIndexFull);
+            });
         }
 
         // Before the table has it's rows rendered, we want to scan the table for elements with knockout bindings

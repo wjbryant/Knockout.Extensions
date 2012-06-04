@@ -58,6 +58,17 @@
             });
         }
 
+        // Demonstrates the ability to post process rows rendered by DataTables so you can add your own effects.
+        this.onRowCallback = function (row, data, displayIndex, displayIndexFull) {
+
+            // If the row is decorated with the "odd" class, change the text data in the row to red.
+            if ($(row).is(".odd")) {
+                return $(row).css("color", "red")[0];
+            }
+
+            return row;
+        }
+
         this.json = ko.dependentObservable(function () {
             return ko.toJSON(this.data);
         }, this);
@@ -110,7 +121,10 @@
                 'Column2', 
                 'Column3', 
                 { mDataProp: 'IsSelected', bSortable: false }
-            ]
+            ],
+            options: {
+                fnRowCallback: onRowCallback
+            }
         }">
             <thead>
                 <tr>

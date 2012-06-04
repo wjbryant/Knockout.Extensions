@@ -13,6 +13,30 @@
 // ** Global Utilities **
 cog.utils = {}
 
+cog.utils.intercept = function (fnToIntercept, fnToExecute) {
+    /// <summary>
+    /// Intercepts a function with another function.  The original function is passed to the new function
+    /// as the last argument of it's parameter list, and must be executed within the new function for the interception
+    /// to be complete.
+    /// </summary>
+    /// <param name="fnToIntercept" type="Function">
+    ///     The old function to intercept.
+    /// </param>
+    /// <param name="fnToExecute" type="Function">
+    ///     The new function to be executed.
+    /// </param>
+    /// <returns>
+    ///     A proxy function that performs the interception.  Execute this function like you would execute the fnToExecute function.
+    /// </returns>
+    fnToIntercept = fnToIntercept || function () { }
+    return function () {
+        var newArguments = []
+        $.each(arguments, function (i, item) { newArguments.push(item); });
+        newArguments.push(fnToIntercept);
+        return fnToExecute.apply(this, newArguments);
+    }
+}
+
 // ** String Utilities **
 cog.utils.string = {}
 cog.utils.string.format = function () {
