@@ -77,7 +77,7 @@
                 if (typeof dataSource == 'function' && dataSource.length == 2) {
                     // Register a fnServerData callback which calls the data source function when the DataTable requires data.
                     options.fnServerData = function (source, criteria, callback) {
-                        dataSource(convertDataCriteria(criteria), function (result) {
+                    dataSource.call(viewModel, convertDataCriteria(criteria), function (result) {
                             callback({
                                 aaData: ko.utils.unwrapObservable(result.Data),
                                 iTotalRecords: ko.utils.unwrapObservable(result.TotalRecords),
