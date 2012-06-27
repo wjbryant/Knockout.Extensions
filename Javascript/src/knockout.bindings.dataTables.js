@@ -195,7 +195,7 @@
 
         getDataTableInstance: function (element) {
             return getDataTableInstance(element);
-        },
+        }
     };
 
     //// This function transforms the data format that DataTables uses to transfer paging and sorting information to the server
