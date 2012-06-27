@@ -16,6 +16,7 @@
         _dataTablesInstanceDataKey = "ko_bindingHandlers_dataTable_Instance";
 
     ko.bindingHandlers['dataTable'] = {
+        options: {},
         addOnInitListener: function (handler) {
             /// <Summary>
             /// Registers a event handler that fires when the Data Table is being initialised.
@@ -30,7 +31,7 @@
         },
         init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
             var binding = ko.utils.unwrapObservable(valueAccessor());
-            var options = {};
+            var options = $.extend(true, {}, ko.bindingHandlers['dataTable'].options);
 
             // If the table has already been initialised, exit now.  Sometimes knockout.js invokes the init function of a binding handler in particular
             // situations twice for a given element.
