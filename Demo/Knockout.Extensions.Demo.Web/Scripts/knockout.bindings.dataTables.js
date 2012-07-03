@@ -57,8 +57,13 @@
                 })
             }
 
-            // Support for computed template name
+            // Support for computed template name and templates that change
             var rowTemplate = ko.utils.unwrapObservable(binding.rowTemplate);
+            if (ko.isObservable(binding.rowTemplate)) {
+                binding.rowTemplate.subscribe(function (value) {
+                    rowTemplate = value;
+                });
+            }
 
             // Register the row template to be used with the DataTable.
             if (binding.rowTemplate && binding.rowTemplate != '') {
@@ -180,7 +185,9 @@
             // gives third party javascript the ability to apply any additional settings to the dataTable before load.
             $(document).trigger(_onInitialisingEventName, { options: options });
 
-            setDataTableInstance(element, $(element).dataTable(options));
+            var dataTable = $(element).dataTable(options);
+            setDataTableInstance(element, dataTable);
+            addRefreshTrigger(dataTable, binding.refresh);
 
             // Apply bindings to those elements that were marked for binding.  See comments above.
         $(element).find(".ko-bind").each(function (e, childElement) {
@@ -289,4 +296,9 @@
         $(element).data(_dataTablesInstanceDataKey, dataTable);
     }
 
+    function addRefreshTrigger(dataTable, observable) {
+        if (observable && ko.isObservable(observable)) {
+            observable(dataTable.fnDraw.bind(dataTable));
+        }
+    }
 })();
