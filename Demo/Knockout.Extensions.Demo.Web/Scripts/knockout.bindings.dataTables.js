@@ -62,6 +62,7 @@
             if (ko.isObservable(binding.rowTemplate)) {
                 binding.rowTemplate.subscribe(function (value) {
                     rowTemplate = value;
+                    getDataTableInstance(element).fnDraw();
                 });
             }
 
