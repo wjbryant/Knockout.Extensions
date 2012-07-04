@@ -94,11 +94,11 @@ ko.bindingHandlers.selectedOptions = $.extend(ko.bindingHandlers.selectedOptions
                     var isChecked = input.attr("checked");
                     var selectedOptionsValue = ko.utils.unwrapObservable(selectedOptionsObservable);
 
-                    if (!(selectedOptionsValue instanceof Array))
+                    if (!selectedOptionsObservable.push)
                         throw new 'Bound selectedOptions observable is not an array.'
 
                     // If the input has been checked on, then push the value of the input to the selectedOptions array if it doesn't already exist.
-                    if (isChecked && selectedOptionsObservable.indexOf(value) === -1)
+                    if (isChecked && selectedOptionsObservable() == null || selectedOptionsObservable.indexOf(value) === -1)
                         selectedOptionsObservable(getSelectedInputValues(element));
                     else
                     // If the input has been checked off, remove the value from the selectedOptions array.
@@ -286,7 +286,7 @@ function selectInputs(control, selectedValues) {
 function getSelectedInputValues(element) {
     var values = [];
     var control = $(element);
-    var inputs = control.find('input').filter('[checked=true]');
+    var inputs = control.find('input:checked');
 
     $.each(inputs, function (i, input) {
         values.push($(input).attr('value'));
