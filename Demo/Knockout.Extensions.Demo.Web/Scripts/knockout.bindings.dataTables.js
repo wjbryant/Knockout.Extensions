@@ -109,6 +109,8 @@
                         binding.dataSource.subscribe(function (newItems) {
                             // ** Redraw table **
                             var dataTable = $(element).dataTable();
+                            setDataTableInstanceOnBinding(dataTable, binding.table);
+                                                                                    
                             // Get a list of rows in the DataTable.
                             var tableRows = dataTable.fnGetNodes();
 
@@ -187,8 +189,8 @@
             $(document).trigger(_onInitialisingEventName, { options: options });
 
             var dataTable = $(element).dataTable(options);
-            setDataTableInstance(element, dataTable);
-            addRefreshTrigger(dataTable, binding.refresh);
+            setDataTableInstanceOnBinding(dataTable, binding.table);
+            setDataTableInstance(element, dataTable);            
 
             // Apply bindings to those elements that were marked for binding.  See comments above.
         $(element).find(".ko-bind").each(function (e, childElement) {
@@ -297,9 +299,9 @@
         $(element).data(_dataTablesInstanceDataKey, dataTable);
     }
 
-    function addRefreshTrigger(dataTable, observable) {
-        if (observable && ko.isObservable(observable)) {
-            observable(dataTable.fnDraw.bind(dataTable));
+    function setDataTableInstanceOnBinding(dataTable, binding) {
+        if(binding && ko.isObservable(binding)) {
+            binding(dataTable);
         }
     }
 })();
