@@ -57,8 +57,14 @@
                 })
             }
 
-            // Support for computed template name
+            // Support for computed template name and templates that change
             var rowTemplate = ko.utils.unwrapObservable(binding.rowTemplate);
+            if (ko.isObservable(binding.rowTemplate)) {
+                binding.rowTemplate.subscribe(function (value) {
+                    rowTemplate = value;
+                    getDataTableInstance(element).fnDraw();
+                });
+            }
 
             // Register the row template to be used with the DataTable.
             if (binding.rowTemplate && binding.rowTemplate != '') {
@@ -103,6 +109,8 @@
                         binding.dataSource.subscribe(function (newItems) {
                             // ** Redraw table **
                             var dataTable = $(element).dataTable();
+                            setDataTableInstanceOnBinding(dataTable, binding.table);
+                                                                                    
                             // Get a list of rows in the DataTable.
                             var tableRows = dataTable.fnGetNodes();
 
@@ -180,7 +188,9 @@
             // gives third party javascript the ability to apply any additional settings to the dataTable before load.
             $(document).trigger(_onInitialisingEventName, { options: options });
 
-            setDataTableInstance(element, $(element).dataTable(options));
+            var dataTable = $(element).dataTable(options);
+            setDataTableInstanceOnBinding(dataTable, binding.table);
+            setDataTableInstance(element, dataTable);            
 
             // Apply bindings to those elements that were marked for binding.  See comments above.
         $(element).find(".ko-bind").each(function (e, childElement) {
@@ -289,4 +299,9 @@
         $(element).data(_dataTablesInstanceDataKey, dataTable);
     }
 
+    function setDataTableInstanceOnBinding(dataTable, binding) {
+        if(binding && ko.isObservable(binding)) {
+            binding(dataTable);
+        }
+    }
 })();
