@@ -12,6 +12,9 @@ Supports the integration of [DataTables](http://datatables.net) with [KnockoutJs
 supports row by row and cell by cell binding of a table to a knockout observable object array, and has 
 basic support for AJAX based data sources.
 
+**Please note, this binding currently does not work with version 1.9.1 and above of DataTables.  See this [link](https://github.com/CogShift/Knockout.Extensions/issues/9) for more details.**
+
+
 Check out the demo project or the samples below for usage examples.  Documentation of this binding is still to come...
 
 #### jsFiddle Samples
