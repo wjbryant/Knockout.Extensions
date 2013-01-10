@@ -1,4 +1,3 @@
-/// <reference path="_references.js" />
 /**
 * A KnockoutJs binding handler for the html tables javascript library DataTables.
 *
@@ -84,7 +83,7 @@
                 if (typeof dataSource == 'function' && dataSource.length == 2) {
                     // Register a fnServerData callback which calls the data source function when the DataTable requires data.
                     options.fnServerData = function (source, criteria, callback) {
-                        dataSource.call(viewModel, convertDataCriteria(criteria), function (result) {
+                    dataSource.call(viewModel, convertDataCriteria(criteria), function (result) {
                             callback({
                                 aaData: ko.utils.unwrapObservable(result.Data),
                                 iTotalRecords: ko.utils.unwrapObservable(result.TotalRecords),
@@ -110,12 +109,12 @@
                             // ** Redraw table **
                             var dataTable = $(element).dataTable();
                             setDataTableInstanceOnBinding(dataTable, binding.table);
-
+                                                                                    
                             // Get a list of rows in the DataTable.
                             var tableRows = dataTable.fnGetNodes();
 
-                            // If the table contains data...
-                            if (dataTable.fnGetData().length) {
+							 // If the table contains data...
+							 if (dataTable.fnGetData().length) {
                                 // Clear the datatable of rows, and if there are no items to display
                                 // in newItems, force the fnClearTables call to rerender the table (because
                                 // the call to fnAddData with a newItems.length == 0 wont rerender the table).
@@ -131,9 +130,9 @@
                             // Add the new data back into the data table.
                             dataTable.fnAddData(unwrappedItems);
 
-                            // Get a list of rows in the DataTable.
-                            var tableRows = dataTable.fnGetNodes();
-
+							 // Get a list of rows in the DataTable.
+							var tableRows = dataTable.fnGetNodes();
+							
                             // Unregister each of the table rows from knockout.
                             // NB: This must be called after fnAddData and fnClearTable are called because we want to allow
                             // DataTables to fire it's draw callbacks with the table's rows in their original state.  Calling
@@ -154,23 +153,31 @@
             // is to build a table row that is bound it's associated record in the data source via knockout js.
             if (!binding.rowTemplate || binding.rowTemplate == '') {
                 options.fnRowCallback = cog.utils.intercept(options.fnRowCallback || function (row) { return row; }, function (row, srcData, displayIndex, displayIndexFull, next) {
-                    var columns = this.fnSettings().aoColumns
+                        var columns = this.fnSettings().aoColumns
 
-                    // Empty the row that has been build by the DataTable of any child elements.
-                    var destRow = $(row);
-                    destRow.empty();
+                        // Empty the row that has been build by the DataTable of any child elements.
+                        var destRow = $(row);
+                        destRow.empty();
 
-                    // For each column in the data table...
-                    ko.utils.arrayForEach(columns, function (column) {
-                        var columnName = column.mDataProp;
-                        // Create a new cell.
-                        var newCell = $("<td></td>");
-                        // Insert the cell in the current row.
-                        destRow.append(newCell);
-                        // bind the cell to the observable in the current data row.
+                        // For each column in the data table...
+                        ko.utils.arrayForEach(columns, function (column) {
+                            var columnName = column.mDataProp;
+                            // Create a new cell.
+                            var newCell = $("<td></td>");
+                            // Insert the cell in the current row.
+                            destRow.append(newCell);
+                            // If mDataProp is a function (since Datatables.js 1.9), then execute it
+                            var accesor = "";
+                            if (typeof columnName == 'function') {
+                                accesor = columnName(srcData, 'display');
+                            }
+                            else {
+                                accesor = eval("srcData['" + columnName.replace(".", "']['") + "']");
+                            }
+                            // bind the cell to the observable in the current data row.
                         var accesor = eval("srcData['" + columnName.replace(".", "']['") + "']");
                         ko.applyBindingsToNode(newCell[0], { text: accesor }, bindingContext.createChildContext(srcData));
-                    });
+                        });
 
                     return next(destRow[0], srcData, displayIndex, displayIndexFull);
                 });
@@ -193,15 +200,15 @@
 
             var dataTable = $(element).dataTable(options);
             setDataTableInstanceOnBinding(dataTable, binding.table);
-            setDataTableInstance(element, dataTable);
+            setDataTableInstance(element, dataTable);            
 
             // Apply bindings to those elements that were marked for binding.  See comments above.
-            $(element).find(".ko-bind").each(function (e, childElement) {
-                ko.applyBindingsToNode(childElement, null, bindingContext);
-                $(childElement).removeClass("ko-bind");
-            });
+        $(element).find(".ko-bind").each(function (e, childElement) {
+            ko.applyBindingsToNode(childElement, null, bindingContext);
+            $(childElement).removeClass("ko-bind");
+        });
 
-
+            
             // Tell knockout that the control rendered by this binding is capable of managing the binding of it's descendent elements.
             // This is crucial, otherwise knockout will attempt to rebind elements that have been printed by the row template.
             return { controlsDescendantBindings: true };
@@ -240,7 +247,7 @@
     //    Descending
     //}
 
-    function convertDataCriteria(srcOptions) {
+    function convertDataCriteria (srcOptions) {
         var getColIndex = function (name) {
             var matches = name.match("\\d+");
 
@@ -303,7 +310,7 @@
     }
 
     function setDataTableInstanceOnBinding(dataTable, binding) {
-        if (binding && ko.isObservable(binding)) {
+        if(binding && ko.isObservable(binding)) {
             binding(dataTable);
         }
     }

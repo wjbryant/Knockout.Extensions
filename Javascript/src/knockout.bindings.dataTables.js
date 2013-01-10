@@ -167,6 +167,14 @@
                             var newCell = $("<td></td>");
                             // Insert the cell in the current row.
                             destRow.append(newCell);
+                            // If mDataProp is a function (since Datatables.js 1.9), then execute it
+                            var accesor = "";
+                            if (typeof columnName == 'function') {
+                                accesor = columnName(srcData, 'display');
+                            }
+                            else {
+                                accesor = eval("srcData['" + columnName.replace(".", "']['") + "']");
+                            }
                             // bind the cell to the observable in the current data row.
                         var accesor = eval("srcData['" + columnName.replace(".", "']['") + "']");
                         ko.applyBindingsToNode(newCell[0], { text: accesor }, bindingContext.createChildContext(srcData));
