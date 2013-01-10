@@ -114,8 +114,8 @@
                             // Get a list of rows in the DataTable.
                             var tableRows = dataTable.fnGetNodes();
 
-                            // If the table contains rows...
-                            if (tableRows.length) {
+							 // If the table contains data...
+							 if (dataTable.fnGetData().length) {
                                 // Clear the datatable of rows, and if there are no items to display
                                 // in newItems, force the fnClearTables call to rerender the table (because
                                 // the call to fnAddData with a newItems.length == 0 wont rerender the table).
@@ -131,6 +131,9 @@
                             // Add the new data back into the data table.
                             dataTable.fnAddData(unwrappedItems);
 
+							 // Get a list of rows in the DataTable.
+							var tableRows = dataTable.fnGetNodes();
+							
                             // Unregister each of the table rows from knockout.
                             // NB: This must be called after fnAddData and fnClearTable are called because we want to allow
                             // DataTables to fire it's draw callbacks with the table's rows in their original state.  Calling
