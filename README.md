@@ -1,32 +1,11 @@
-Knockout Extensions
-===================
+# Knockout DataTables Binding
 
-This project contains a number of useful extensions and databindings for the [Knockout JS](http://knockoutjs.com) javascript library.
+Supports the integration of [DataTables](http://datatables.net/) with [KnockoutJS](http://knockoutjs.com/).
+It  supports row by row and cell by cell binding of a table to a knockout observable object array, and has
+basic support for Ajax based data sources.
 
-To view demos of these extensions check out the JS Fiddles below, or download the latest version of the source and run the included demo project.
-
-## Knockout Data Bindings ##
-
-### DataTables Binding
-Supports the integration of [DataTables](http://datatables.net) with [KnockoutJs](http://knockoutjs.com).  It 
-supports row by row and cell by cell binding of a table to a knockout observable object array, and has 
-basic support for AJAX based data sources.
-
-**Please note, this binding currently does not work with version 1.9.1 and above of DataTables.  See this [link](https://github.com/CogShift/Knockout.Extensions/issues/9) for more details.**
-
-
-Check out the demo project or the samples below for usage examples.  Documentation of this binding is still to come...
-
-#### jsFiddle Samples
-(There are currently issues viewing these fiddles in IE9 due to the scripts being blocked by the browser)
-
-- [Sample 1](http://jsfiddle.net/ducka/fPaQs/)
-- [Sample 2](http://jsfiddle.net/ducka/haq2y/)
-
-### Check Box List and Radio Button List Binding
-This binding enhances the humble checkbox and radio button elements so they work just like a drop down and and list box elements.
-
-JS Fiddles comming soon...
+**Please note, this binding currently does not work with version 1.9.1 and above of DataTables.
+See this [link](https://github.com/CogShift/Knockout.Extensions/issues/9) for more details.**
 
 ---
 <div><br />
