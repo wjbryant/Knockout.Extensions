@@ -1,4 +1,4 @@
-/*! knockout.datatables v0.1.0 | https://github.com/wjbryant/Knockout.Extensions/tree/DataTables
+/*! knockout.datatables v0.1.0-dev | https://github.com/wjbryant/Knockout.Extensions/tree/DataTables
 Copyright (c) 2013 Lucas Martin | http://creativecommons.org/licenses/by/3.0/ */
 
 /*global ko, $ */
@@ -6,8 +6,8 @@ Copyright (c) 2013 Lucas Martin | http://creativecommons.org/licenses/by/3.0/ */
 (function () {
     'use strict';
 
-    var _onInitializingEventName = 'ko_bindingHandlers_dataTable_onInitializing',
-        _dataTablesInstanceDataKey = 'ko_bindingHandlers_dataTable_Instance';
+    var onInitializingEventName = 'ko_bindingHandlers_dataTable_onInitializing',
+        dataTablesInstanceDataKey = 'ko_bindingHandlers_dataTable_Instance';
 
     /**
      * This function transforms the data format that DataTables uses to transfer paging and sorting information to the server
@@ -43,16 +43,13 @@ Copyright (c) 2013 Lucas Martin | http://creativecommons.org/licenses/by/3.0/ */
         var destOptions = { Columns: [] },
             i,
             j,
-            getColIndex = function (name) {
-                var matches = name.match('\\d+');
-
-                if (matches && matches.length) {
-                    return matches[0];
-                }
-
-                return null;
-            },
             sortOrder;
+
+        function getColIndex(name) {
+            var matches = name.match(/\d+/);
+
+            return matches ? matches[0] : null;
+        }
 
         // Figure out how many columns in in the data table.
         for (i = 0; i < srcOptions.length; i += 1) {
@@ -106,11 +103,11 @@ Copyright (c) 2013 Lucas Martin | http://creativecommons.org/licenses/by/3.0/ */
     }
 
     function getDataTableInstance(element) {
-        return $(element).data(_dataTablesInstanceDataKey);
+        return $(element).data(dataTablesInstanceDataKey);
     }
 
     function setDataTableInstance(element, dataTable) {
-        $(element).data(_dataTablesInstanceDataKey, dataTable);
+        $(element).data(dataTablesInstanceDataKey, dataTable);
     }
 
     function setDataTableInstanceOnBinding(dataTable, binding) {
@@ -125,13 +122,13 @@ Copyright (c) 2013 Lucas Martin | http://creativecommons.org/licenses/by/3.0/ */
          * Registers a event handler that fires when the Data Table is being initialized.
          */
         addOnInitListener: function (handler) {
-            $(document).bind(_onInitializingEventName, handler);
+            $(document).bind(onInitializingEventName, handler);
         },
         /**
          * Unregisters an event handler to the onInitializing event.
          */
         removeOnInitListener: function (handler) {
-            $(document).unbind(_onInitializingEventName, handler);
+            $(document).unbind(onInitializingEventName, handler);
         },
         init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
             var binding = ko.utils.unwrapObservable(valueAccessor()),
@@ -274,7 +271,7 @@ Copyright (c) 2013 Lucas Martin | http://creativecommons.org/licenses/by/3.0/ */
                         });
                     }
                 }
-                // If the dataSource was not a function that retrieves data, or a javascript object array containing data.
+                // If the dataSource was not a function that retrieves data, or a JavaScript object array containing data.
                 else {
                     throw new Error('The dataSource defined must either be a JavaScript object array, or a function that takes special parameters.');
                 }
@@ -296,7 +293,7 @@ Copyright (c) 2013 Lucas Martin | http://creativecommons.org/licenses/by/3.0/ */
                         var columnName = column.mDataProp,
                             // Create a new cell.
                             newCell = $('<td></td>'),
-                            accessor = '';
+                            accessor;
 
                         // Insert the cell in the current row.
                         destRow.append(newCell);
@@ -306,11 +303,13 @@ Copyright (c) 2013 Lucas Martin | http://creativecommons.org/licenses/by/3.0/ */
                             accessor = columnName(srcData, 'display');
                         }
                         else {
-                            accessor = eval("srcData['" + columnName.replace('.', "']['") + "']");
+                            accessor = srcData;
                         }
 
                         // bind the cell to the observable in the current data row.
-                        accessor = eval("srcData['" + columnName.replace('.', "']['") + "']");
+                        ko.utils.arrayForEach(columnName.split('.'), function (item) {
+                            accessor = accessor[item];
+                        });
                         ko.applyBindingsToNode(newCell[0], { text: accessor }, bindingContext.createChildContext(srcData));
                     });
 
@@ -330,8 +329,8 @@ Copyright (c) 2013 Lucas Martin | http://creativecommons.org/licenses/by/3.0/ */
             });
 
             // Fire the onInitializing event to allow the options object to be globally edited before the dataTables table is initialized. This
-            // gives third party javascript the ability to apply any additional settings to the dataTable before load.
-            $(document).trigger(_onInitializingEventName, { options: options });
+            // gives third party JavaScript the ability to apply any additional settings to the dataTable before load.
+            $(document).trigger(onInitializingEventName, { options: options });
 
             dataTable = $(element).dataTable(options);
             setDataTableInstanceOnBinding(dataTable, binding.table);
